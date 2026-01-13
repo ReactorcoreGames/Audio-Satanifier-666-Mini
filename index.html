@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Satanizer 666 Mini</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            font-size: 16px;
+            background: linear-gradient(135deg, #1a0000, #330000);
+            color: #ff6666;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(51, 0, 0, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #ff3333;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-family: Papyrus, fantasy, serif;
+            text-align: center;
+            color: #ff3333;
+            text-shadow: 0 0 10px rgba(255, 51, 51, 0.8);
+            margin-bottom: 2rem;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+        }
+
+        .drop-zone {
+            border: 3px dashed #ff3333;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            background: rgba(77, 0, 0, 0.3);
+            font-size: 18px;
+        }
+
+        .drop-zone:hover, .drop-zone.drag-over {
+            background: rgba(77, 0, 0, 0.7);
+            border-color: #ff6666;
+            transform: scale(1.02);
+        }
+
+        .effects-section {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: rgba(26, 0, 0, 0.5);
+            border-radius: 10px;
+            border: 1px solid #ff3333;
+        }
+
+        .effects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .effect-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(51, 0, 0, 0.5);
+            border-radius: 5px;
+            border: 1px solid #ff3333;
+            transition: all 0.3s ease;
+        }
+
+        .effect-item:hover {
+            background: rgba(77, 0, 0, 0.7);
+            transform: translateY(-2px);
+        }
+
+        input[type="checkbox"] {
+            accent-color: #ff3333;
+            transform: scale(1.2);
+        }
+
+        label {
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+		
+		/* Footer */
+		.footer {
+			text-align: center;
+			padding: 0.5rem 0;
+			margin-top: 0.5rem;
+			border-top: 1px solid var(--border-color);
+		}
+		
+		.footer-link {
+			color: var(--text-color);
+			text-decoration: none;
+			font-weight: bold;
+			transition: color 0.3s ease;
+		}
+		
+		.footer-link:hover {
+			color: var(--accent-color);
+			text-decoration: underline;
+		}
+
+        button {
+            background: linear-gradient(45deg, #ff3333, #cc0000);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: Georgia, serif;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 51, 51, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .satanify-btn, .download-btn {
+            font-family: Papyrus, fantasy, serif;
+            font-size: 1.2rem;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #cc0000, #990000);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 51, 51, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .satanify-btn {
+            display: block;
+            margin: 1.5rem auto;
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        audio {
+            width: 100%;
+            margin: 1rem 0;
+            border-radius: 10px;
+            background: rgba(26, 0, 0, 0.5);
+        }
+
+        .processing {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes satanic-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        }
+
+        .satanic-effect {
+            animation: satanic-pulse 1s ease-out;
+        }
+
+        .status {
+            text-align: center;
+            margin: 1rem 0;
+            font-style: italic;
+            color: #ff9999;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+                margin: 10px;
+            }
+            
+            .effects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Audio Satanizer 666 Mini 🔥</h1>
+        
+        <div id="dropZone" class="drop-zone">
+            <p>📁 Drag & Drop your audio file here or click to select</p>
+            <p style="font-size: 0.8rem; opacity: 0.8;">Supported: MP3, WAV, OGG, M4A, FLAC</p>
+            <input type="file" id="fileInput" accept="audio/*" style="display: none;">
+        </div>
+
+        <div class="effects-section">
+            <h3 style="text-align: center; margin-bottom: 1rem;">Choose Your Satanic Effects</h3>
+            <div class="effects-grid">
+                <div class="effect-item">
+                    <input type="checkbox" id="reverb" checked>
+                    <label for="reverb">👹 Reverb (Unholy echoes)</label>
+                </div>
+                <div class="effect-item">
+                    <input type="checkbox" id="pitchShift" checked>
+                    <label for="pitchShift">🎵 Pitch Shift (Demonic depths)</label>
+                </div>
+                <div class="effect-item">
+                    <input type="checkbox" id="distortion" checked>
+                    <label for="distortion">⚡ Distortion (Soul corruption)</label>
+                </div>
+                <div class="effect-item">
+                    <input type="checkbox" id="reverse" >
+                    <label for="reverse">🔄 Reverse (Backwards masking)</label>
+                </div>
+            </div>
+            <button id="satanifyBtn" class="satanify-btn">⚡ SATANIFY ⚡</button>
+        </div>
+
+        <div id="playerSection">
+            <div id="status" class="status"></div>
+            <audio id="audioPlayer" controls class="hidden"></audio>
+            <div class="controls">
+                <button id="downloadBtn" class="download-btn hidden">💾 Download Satanic Audio</button>
+            </div>
+        </div>
+		
+		<!-- Footer -->
+        <footer class="footer">
+            <a href="https://reactorcore.itch.io/" target="_blank" class="footer-link">Made by Reactorcore Games</a>
+        </footer>
+    </div>
+
+    <script src="Tone.js"></script>
+    <script>
+        let originalBuffer = null;
+        let processedBuffer = null;
+        let originalFileName = '';
+        
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const satanifyBtn = document.getElementById('satanifyBtn');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const status = document.getElementById('status');
+
+        // Event listeners
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', handleDragOver);
+        dropZone.addEventListener('dragleave', handleDragLeave);
+        dropZone.addEventListener('drop', handleDrop);
+        fileInput.addEventListener('change', handleFileSelect);
+        satanifyBtn.addEventListener('click', processAudio);
+        downloadBtn.addEventListener('click', downloadAudio);
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        }
+
+        async function handleFile(file) {
+            if (!file.type.startsWith('audio/')) {
+                updateStatus('❌ Please select a valid audio file');
+                return;
+            }
+
+            originalFileName = file.name.replace(/\.[^/.]+$/, '');
+            updateStatus('📤 Loading audio file...');
+
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                originalBuffer = await Tone.context.decodeAudioData(arrayBuffer);
+                updateStatus('✅ Audio loaded successfully! Choose effects and click Satanify.');
+                dropZone.classList.add('satanic-effect');
+                setTimeout(() => dropZone.classList.remove('satanic-effect'), 1000);
+            } catch (error) {
+                console.error('Error loading audio:', error);
+                updateStatus('❌ Error loading audio file. Please try another file.');
+            }
+        }
+
+        async function processAudio() {
+            if (!originalBuffer) {
+                updateStatus('❌ Please upload an audio file first');
+                return;
+            }
+
+            const effects = {
+                reverb: document.getElementById('reverb').checked,
+                pitchShift: document.getElementById('pitchShift').checked,
+                distortion: document.getElementById('distortion').checked,
+                reverse: document.getElementById('reverse').checked
+            };
+
+            if (!Object.values(effects).some(e => e)) {
+                updateStatus('❌ Please select at least one effect');
+                return;
+            }
+
+            satanifyBtn.classList.add('processing');
+            satanifyBtn.textContent = '👹 Summoning dark forces...';
+            updateStatus('🔥 Processing audio with satanic effects...');
+
+            try {
+                await Tone.start();
+                
+                let workingBuffer = originalBuffer;
+
+                // Apply reverse effect first if selected (using manual reversal)
+                if (effects.reverse) {
+                    workingBuffer = reverseAudioBuffer(workingBuffer);
+                }
+
+                // Apply Tone.js effects using offline rendering
+                if (effects.reverb || effects.pitchShift || effects.distortion) {
+                    // Create offline render context
+                    const duration = workingBuffer.duration;
+                    const sampleRate = workingBuffer.sampleRate;
+                    
+                    workingBuffer = await Tone.Offline(async () => {
+                        // Create a player for the working buffer
+                        const player = new Tone.Player(workingBuffer).toDestination();
+                        
+                        // Create effects chain
+                        let effectsChain = [];
+                        
+                        if (effects.distortion) {
+                            const distortion = new Tone.Distortion({
+                                distortion: 0.5,
+                                oversample: "2x"
+                            });
+                            effectsChain.push(distortion);
+                        }
+
+                        if (effects.pitchShift) {
+							const pitchShift = new Tone.PitchShift({
+								pitch: -6, // One octave down for demonic effect
+								windowSize: 0.1, // Smaller window for smoother transitions
+								overlap: 8, // More overlap for smoother sound
+								delayTime: 0.02 // Reduced delay
+							});
+							effectsChain.push(pitchShift);
+						}
+
+                        if (effects.reverb) {
+                            const reverb = new Tone.Reverb({
+                                decay: 5,
+                                wet: 0.6,
+                                preDelay: 0.01
+                            });
+                            // Generate the reverb impulse response
+                            await reverb.generate();
+                            effectsChain.push(reverb);
+                        }
+
+                        // Connect effects chain
+                        if (effectsChain.length > 0) {
+                            // Disconnect player from destination first
+                            player.disconnect();
+                            
+                            // Connect through effects chain
+                            let currentNode = player;
+                            for (let i = 0; i < effectsChain.length; i++) {
+                                currentNode.connect(effectsChain[i]);
+                                currentNode = effectsChain[i];
+                            }
+                            
+                            // Connect final effect to destination
+                            currentNode.toDestination();
+                        }
+                        
+                        // Start playback at time 0
+                        player.start(0);
+                        
+                    }, duration);
+                }
+
+                // Apply normalization to the final result
+				processedBuffer = normalizeAudioBuffer(workingBuffer);
+                
+                // Create audio URL and update player
+                const audioUrl = await bufferToAudioUrl(processedBuffer);
+                audioPlayer.src = audioUrl;
+                audioPlayer.classList.remove('hidden');
+                downloadBtn.classList.remove('hidden');
+                
+                updateStatus('🎉 Audio satanized successfully! Playing now...');
+                
+                // Auto-play the processed audio
+                try {
+                    await audioPlayer.play();
+                } catch (playError) {
+                    console.log('Auto-play blocked by browser, user can play manually');
+                    updateStatus('🎉 Audio satanized successfully! Click play button below.');
+                }
+                
+                satanifyBtn.classList.add('satanic-effect');
+                setTimeout(() => satanifyBtn.classList.remove('satanic-effect'), 1000);
+
+            } catch (error) {
+                console.error('Error processing audio:', error);
+                updateStatus('❌ Error processing audio: ' + error.message);
+            } finally {
+                satanifyBtn.classList.remove('processing');
+                satanifyBtn.textContent = '⚡ SATANIFY ⚡';
+            }
+        }
+
+        function reverseAudioBuffer(buffer) {
+            const reversed = Tone.context.createBuffer(
+                buffer.numberOfChannels,
+                buffer.length,
+                buffer.sampleRate
+            );
+            
+            for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+                const channelData = buffer.getChannelData(channel);
+                const reversedData = reversed.getChannelData(channel);
+                
+                for (let i = 0; i < channelData.length; i++) {
+                    reversedData[i] = channelData[channelData.length - 1 - i];
+                }
+            }
+            
+            return reversed;
+        }
+		
+		function normalizeAudioBuffer(buffer) {
+			const normalized = Tone.context.createBuffer(
+				buffer.numberOfChannels,
+				buffer.length,
+				buffer.sampleRate
+			);
+			
+			// Find peak amplitude across all channels
+			let peak = 0;
+			for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+				const channelData = buffer.getChannelData(channel);
+				for (let i = 0; i < channelData.length; i++) {
+					peak = Math.max(peak, Math.abs(channelData[i]));
+				}
+			}
+			
+			// Calculate normalization factor (target 95% of max to avoid clipping)
+			const normalizationFactor = peak > 0 ? 0.95 / peak : 1;
+			
+			// Apply normalization
+			for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+				const originalData = buffer.getChannelData(channel);
+				const normalizedData = normalized.getChannelData(channel);
+				
+				for (let i = 0; i < originalData.length; i++) {
+					normalizedData[i] = originalData[i] * normalizationFactor;
+				}
+			}
+			
+			return normalized;
+		}
+
+        async function bufferToAudioUrl(buffer) {
+            const wavBlob = await bufferToWave(buffer);
+            return URL.createObjectURL(wavBlob);
+        }
+
+        async function downloadAudio() {
+            if (!processedBuffer) {
+                updateStatus('❌ No processed audio to download');
+                return;
+            }
+
+            try {
+                const blob = await bufferToWave(processedBuffer);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `${originalFileName}_hail_satan.wav`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                downloadBtn.classList.add('satanic-effect');
+                setTimeout(() => downloadBtn.classList.remove('satanic-effect'), 1000);
+                updateStatus('💾 Satanic audio downloaded successfully!');
+            } catch (error) {
+                console.error('Error downloading audio:', error);
+                updateStatus('❌ Error downloading audio');
+            }
+        }
+
+        function bufferToWave(buffer) {
+            const numChannels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+            const format = 1; // PCM
+            const bitDepth = 16;
+            
+            const bytesPerSample = bitDepth / 8;
+            const blockAlign = numChannels * bytesPerSample;
+            
+            const wavDataByteLength = buffer.length * numChannels * bytesPerSample;
+            const headerByteLength = 44;
+            const totalLength = headerByteLength + wavDataByteLength;
+            
+            const wavArrayBuffer = new ArrayBuffer(totalLength);
+            const view = new DataView(wavArrayBuffer);
+            
+            // Write WAV header
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+            
+            let offset = 0;
+            writeString(offset, 'RIFF'); offset += 4;
+            view.setUint32(offset, totalLength - 8, true); offset += 4;
+            writeString(offset, 'WAVE'); offset += 4;
+            writeString(offset, 'fmt '); offset += 4;
+            view.setUint32(offset, 16, true); offset += 4;
+            view.setUint16(offset, format, true); offset += 2;
+            view.setUint16(offset, numChannels, true); offset += 2;
+            view.setUint32(offset, sampleRate, true); offset += 4;
+            view.setUint32(offset, sampleRate * blockAlign, true); offset += 4;
+            view.setUint16(offset, blockAlign, true); offset += 2;
+            view.setUint16(offset, bitDepth, true); offset += 2;
+            writeString(offset, 'data'); offset += 4;
+            view.setUint32(offset, wavDataByteLength, true); offset += 4;
+            
+            // Write audio data
+            const channels = [];
+            for (let i = 0; i < numChannels; i++) {
+                channels.push(buffer.getChannelData(i));
+            }
+            
+            for (let i = 0; i < buffer.length; i++) {
+                for (let channel = 0; channel < numChannels; channel++) {
+                    const sample = Math.max(-1, Math.min(1, channels[channel][i]));
+                    const intSample = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+                    view.setInt16(offset, intSample, true);
+                    offset += 2;
+                }
+            }
+            
+            return new Blob([wavArrayBuffer], { type: 'audio/wav' });
+        }
+
+        function updateStatus(message) {
+            status.textContent = message;
+        }
+
+        // Initial status
+        updateStatus('🎵 Upload an audio file to begin your dark transformation...');
+    </script>
+</body>
+</html>
