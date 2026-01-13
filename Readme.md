@@ -1,5 +1,7 @@
 # Audio Satanizer 666 Mini
 
+Use it directly here: https://reactorcoregames.github.io/Audio-Satanifier-666-Mini/
+
 ![!promo AudioSatan666Mini_itchcover](https://github.com/user-attachments/assets/a9c894b0-049d-41ba-8f93-c542130effad)
 
 ## About
