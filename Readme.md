@@ -2,13 +2,12 @@
 
 Use it directly here: https://reactorcoregames.github.io/Audio-Satanifier-666-Mini/
 
-![!promo AudioSatan666Mini_itchcover](https://github.com/user-attachments/assets/a9c894b0-049d-41ba-8f93-c542130effad)
+
+<img width="1123" height="846" alt="!info AudioSatan666Mini_interface" src="https://github.com/user-attachments/assets/0e032264-1ef7-4891-982c-35bbfad120b1" />
 
 ## About
 
 Turn any audio file you have into the Devil itself. Easy and fast. Hail Satan! /s
-
-<img width="1123" height="846" alt="!info AudioSatan666Mini_interface" src="https://github.com/user-attachments/assets/0e032264-1ef7-4891-982c-35bbfad120b1" />
 
 ## Features
 
